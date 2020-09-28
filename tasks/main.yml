@@ -1,18 +1,27 @@
 ---
+- name: Install epel-release and yum-utils
+  yum: name={{ item }} state=present
+  with_items:
+    - epel-release
+    - yum-utils
+- name: Install remi repo
+  yum:
+    name: http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+    state: present
+- name: Enable repo
+  command: yum-config-manager --enable remi-php72
 - name: Install php-fpm and deps
   yum: name={{ item }} state=present
   with_items:
-    - php
+    - php-cli
     - php-fpm
-    - php-enchant
-    - php-IDNA_Convert
-    - php-mbstring
     - php-mysql
-    - php-PHPMailer
-    - php-process
-    - php-simplepie
+    - php-json
+    - php-opcache
+    - php-mbstring
     - php-xml
-
+    - php-gd
+    - php-curl
 - name: Disable default pool
   command: mv /etc/php-fpm.d/www.conf /etc/php-fpm.d/www.disabled creates=/etc/php-fpm.d/www.disabled
   notify: restart php-fpm
